@@ -1,6 +1,5 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
@@ -17,7 +16,6 @@ function search(val, metadata) {
 
 function Search(props) {
   const [searchTerm, setSearchTerm] = React.useState(null);
-  const [results, setResults] = React.useState(null);
   let res = undefined;
 
   if (searchTerm) {

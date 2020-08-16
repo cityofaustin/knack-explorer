@@ -104,7 +104,7 @@ function AppDetails(props) {
     meta.views = extractViews(metadata)
     meta.fields = extractFields(metadata);
     setMetadata(meta);
-  }, [])
+  }, [metadata])
 
   let configObjects = {
     title: "Objects",
