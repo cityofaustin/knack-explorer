@@ -5,21 +5,12 @@ import Col from "react-bootstrap/Col";
 import Badge from "react-bootstrap/Badge";
 import BootstrapTable from "react-bootstrap/Table";
 import MetadataContext from "./MetadataContext";
-import { metadataTable } from "./utils";
 
-const LINKS = [
-  {
-    route: "/views/$key",
-    param: "key",
-    fieldname: "key",
-  },
-]
-
-function findScene(scenes, key) {
-  return scenes.filter((scene) => scene.key === key)[0];
+function findView(views, key) {
+  return views.filter((view) => view.key === key)[0];
 }
 
-function sceneInfo(data) {
+function viewInfo(data) {
   return (
     <Row>
       <Col>
@@ -33,10 +24,6 @@ function sceneInfo(data) {
               <td>Key</td>
               <td>{data.key}</td>
             </tr>
-            <tr>
-              <td>Slug</td>
-              <td>{data.slug}</td>
-            </tr>
           </tbody>
         </BootstrapTable>
       </Col>
@@ -44,10 +31,9 @@ function sceneInfo(data) {
   );
 }
 
-function SceneDetails(props) {
+function ViewDetails(props) {
   const metadata = React.useContext(MetadataContext);
-
-  const key = useRouteMatch("/scenes/:key").params.key;
+  const key = useRouteMatch("/views/:key").params.key;
   if (!metadata) {
     return (
       <Row>
@@ -60,7 +46,7 @@ function SceneDetails(props) {
     );
   }
 
-  const data = findScene(metadata.scenes, key);
+  const data = findView(metadata.views, key);
 
   return (
     <>
@@ -68,32 +54,17 @@ function SceneDetails(props) {
         <Col>
           <h2>
             <Badge variant="info" className="text-monospace">
-              Scene
+              View
             </Badge>{" "}
             {data.name}
           </h2>
         </Col>
       </Row>
       <Row>
-        <Col>{sceneInfo(data)}</Col>
-      </Row>
-      <Row>
-        <Col>
-          <h3>Views</h3>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          {metadataTable(
-            "Views",
-            ["name", "key", "type", "title"],
-            data.views,
-            LINKS
-          )}
-        </Col>
+        <Col>{viewInfo(data)}</Col>
       </Row>
     </>
   );
 }
 
-export default SceneDetails;
+export default ViewDetails;

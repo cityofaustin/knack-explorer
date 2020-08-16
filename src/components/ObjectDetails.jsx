@@ -76,7 +76,12 @@ function ObjectDetails(props) {
     <>
       <Row>
         <Col>
-        <h2><Badge variant="info" className="text-monospace">Object</Badge> {data.name}</h2>
+          <h2>
+            <Badge variant="info" className="text-monospace">
+              Object
+            </Badge>{" "}
+            {data.name}
+          </h2>
         </Col>
       </Row>
       <Row>
@@ -84,16 +89,17 @@ function ObjectDetails(props) {
       </Row>
       <Row>
         <Col>
-          <Row>
-            <Col>
-              {metadataTable(
-                "Fields",
-                ["name", "key", "object"],
-                data.fields,
-                LINKS.fields
-              )}
-            </Col>
-          </Row>
+          <h3>Fields</h3>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          {metadataTable(
+            "Fields",
+            ["name", "key", "object"],
+            data.fields,
+            LINKS.fields
+          )}
         </Col>
       </Row>
     </>

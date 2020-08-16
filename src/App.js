@@ -12,15 +12,11 @@ import AppDetails from "./components/AppDetails";
 import ObjectDetails from "./components/ObjectDetails";
 import FieldDetails from "./components/FieldDetails";
 import SceneDetails from "./components/SceneDetails";
+import ViewDetails from "./components/ViewDetails";
 import MetadataContext from "./components/MetadataContext";
 
 // const knackpyDev = "5d79512148c4af00106d1507";
 // const dataTracker = "5815f29f7f7252cc2ca91c4f"
-//
-// object details > fields > field details
-// view details
-// scene details
-// fields
 
 function extractFields(metadata) {
   let fields = [];
@@ -158,21 +154,20 @@ function App() {
               setTabKey={setTabKey}
             />
           </Route>
-          <Route path="/objects/:key">
-            <MetadataContext.Provider value={metadata}>
+          <MetadataContext.Provider value={metadata}>
+            <Route path="/objects/:key">
               <ObjectDetails />
-            </MetadataContext.Provider>
-          </Route>
-          <Route path="/fields/:key">
-            <MetadataContext.Provider value={metadata}>
+            </Route>
+            <Route path="/fields/:key">
               <FieldDetails />
-            </MetadataContext.Provider>
-          </Route>
-          <Route path="/scenes/:scene">
-            <MetadataContext.Provider value={metadata}>
+            </Route>
+            <Route path="/scenes/:key">
               <SceneDetails />
-            </MetadataContext.Provider>
-          </Route>
+            </Route>
+            <Route path="/views/:key">
+              <ViewDetails />
+            </Route>
+          </MetadataContext.Provider>
         </Container>
       </Switch>
     </Router>
