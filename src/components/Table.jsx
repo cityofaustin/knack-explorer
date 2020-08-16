@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import BootstrapTable from "react-bootstrap/Table";
@@ -23,10 +24,26 @@ function linkHandler(row, link) {
   return row;
 }
 
-function handleValue(row, field) {
+function createLink() {}
+
+function handleValue(row, field, links) {
   // logic to stringify row value for table cell
-  const val = row[field.name];
-  return field.data_type === "json" ? JSON.stringify(val) : val;
+  let val = row[field.name];
+
+  if (!links || field.data_type === "json") {
+    // cannot use a json field as a link!
+    return field.data_type === "json" ? JSON.stringify(val) : val;
+  }
+
+  let newVal = val;
+
+  links.map((link) => {
+    if (field.name === link.fieldname) {
+      const route = link.route.replace(`$${link.param}`, row[link.param]);
+      newVal = <Link to={route}>{val}</Link>;
+    }
+  });
+  return newVal;
 }
 
 export default function Table(props) {
@@ -35,18 +52,6 @@ export default function Table(props) {
 
   // todo: not tested with multiple links
   const links = props.links;
-
-  if (links !== undefined) {
-    links.map((link) => {
-      const linkCol = { id: link.name, label: link.label, name: link.name };
-      fields.push(linkCol);
-      return null;
-    });
-    links.map((link) => {
-      rows = rows.map((row) => linkHandler(row, link));
-      return null;
-    });
-  }
 
   return (
     <Row className="mb-2">
@@ -60,7 +65,7 @@ export default function Table(props) {
               return (
                 <tr key={i}>
                   {props.fields.map((field, i) => {
-                    return <td key={i}> {handleValue(row, field)}</td>;
+                    return <td key={i}> {handleValue(row, field, links)}</td>;
                   })}
                 </tr>
               );
