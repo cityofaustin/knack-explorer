@@ -25,7 +25,7 @@ function Search(props) {
   return (
     <>
     <Row>
-      <Col md={3}>
+      <Col md={6}>
         <Form>
           <Form.Group controlId="appId">
             <Form.Label>Search</Form.Label>
