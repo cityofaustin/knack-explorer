@@ -10,6 +10,7 @@ import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 import AppDetails from "./components/AppDetails";
 import ObjectDetails from "./components/ObjectDetails";
+import FieldDetails from "./components/FieldDetails";
 import MetadataContext from "./components/MetadataContext";
 
 // const knackpyDev = "5d79512148c4af00106d1507";
@@ -20,6 +21,34 @@ import MetadataContext from "./components/MetadataContext";
 // scene details
 // fields
 
+function extractFields(metadata) {
+  let fields = [];
+  metadata.objects.map((object) => {
+    let currentfields = object.fields.map((field) => {
+      // add scene key as a view property
+      field.object = object.key;
+      return field;
+    });
+    fields = [...fields, ...currentfields];
+    return null;
+  });
+  return fields;
+}
+
+function extractViews(metadata) {
+  let views = [];
+  metadata.scenes.map((scene) => {
+    let currentViews = scene.views.map((view) => {
+      // add scene key as a view property
+      view.scene = scene.key;
+      return view;
+    });
+    views = [...views, ...currentViews];
+    return null;
+  });
+  return views;
+}
+
 function getMetadata(e, appId, setMetadata, setLoading, setError) {
   e.preventDefault();
   setLoading(true);
@@ -27,7 +56,10 @@ function getMetadata(e, appId, setMetadata, setLoading, setError) {
   fetch(url)
     .then((response) => response.json())
     .then((data) => {
-      setMetadata(data.application);
+      let metadata = data.application;
+      metadata.views = extractViews(metadata);
+      metadata.fields = extractFields(metadata);
+      setMetadata(metadata);
       setLoading(false);
     })
     .catch((error) => {
@@ -46,7 +78,13 @@ function AppSearch(props) {
   }
 
   if (metadata && metadata.id) {
-    return <AppDetails metadata={metadata} />;
+    return (
+      <AppDetails
+        metadata={metadata}
+        tabKey={props.tabKey}
+        setTabKey={props.setTabKey}
+      />
+    );
   }
 
   return (
@@ -94,6 +132,9 @@ function AppSearch(props) {
 
 function App() {
   const [metadata, setMetadata] = React.useState(null);
+  // set the default tab to display after app load
+  // this state persists after the user navigates away from the home page
+  const [tabKey, setTabKey] = React.useState("info");
 
   return (
     <Router>
@@ -101,15 +142,27 @@ function App() {
         <Container>
           <Row>
             <Col>
-              <h1><Link to="/">Knack Explorer</Link></h1>
+              <h1>
+                <Link to="/">Knack Explorer</Link>
+              </h1>
             </Col>
           </Row>
           <Route exact path="/">
-            <AppSearch metadata={metadata} setMetadata={setMetadata} />
+            <AppSearch
+              metadata={metadata}
+              setMetadata={setMetadata}
+              tabKey={tabKey}
+              setTabKey={setTabKey}
+            />
           </Route>
-          <Route path="/object/:key">
+          <Route path="/objects/:key">
             <MetadataContext.Provider value={metadata}>
               <ObjectDetails />
+            </MetadataContext.Provider>
+          </Route>
+          <Route path="/fields/:key">
+            <MetadataContext.Provider value={metadata}>
+              <FieldDetails />
             </MetadataContext.Provider>
           </Route>
         </Container>

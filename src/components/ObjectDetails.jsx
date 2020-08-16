@@ -4,6 +4,17 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import BootstrapTable from "react-bootstrap/Table";
 import MetadataContext from "./MetadataContext";
+import { metadataTable } from "./utils";
+
+const LINKS = {
+  fields: [
+    {
+      route: "/fields/$key",
+      param: "key",
+      fieldname: "key",
+    },
+  ],
+};
 
 function findObject(objects, key) {
   return objects.filter((obj) => obj.key === key)[0];
@@ -16,12 +27,24 @@ function objInfo(data) {
         <BootstrapTable striped bordered hover>
           <tbody>
             <tr>
-              <td>Name</td>
-              <td>{data.name}</td>
-            </tr>
-            <tr>
               <td>Key</td>
               <td>{data.key}</td>
+            </tr>
+            <tr>
+              <td>Inflections</td>
+              <td>{JSON.stringify(data.inflections)}</td>
+            </tr>
+            <tr>
+              <td>SOrt</td>
+              <td>{JSON.stringify(data.sort)}</td>
+            </tr>
+            <tr>
+              <td>Tasks</td>
+              <td>{JSON.stringify(data.tasks)}</td>
+            </tr>
+            <tr>
+              <td>Connections</td>
+              <td>{JSON.stringify(data.connections)}</td>
             </tr>
           </tbody>
         </BootstrapTable>
@@ -33,7 +56,7 @@ function objInfo(data) {
 function ObjectDetails(props) {
   const metadata = React.useContext(MetadataContext);
 
-  const key = useRouteMatch("/object/:key").params.key;
+  const key = useRouteMatch("/objects/:key").params.key;
   if (!metadata) {
     return (
       <Row>
@@ -52,11 +75,20 @@ function ObjectDetails(props) {
     <>
       <Row>
         <Col>
-          <h1>Hi</h1>
+          <h1>{data.name}</h1>
         </Col>
       </Row>
       <Row>
         <Col>{objInfo(data)}</Col>
+      </Row>
+      <Row>
+        <Col>
+          <Row>
+            <Col>
+              {metadataTable("Fields", ["name", "key", "object"], data.fields, LINKS.fields)}
+            </Col>
+          </Row>
+        </Col>
       </Row>
     </>
   );
