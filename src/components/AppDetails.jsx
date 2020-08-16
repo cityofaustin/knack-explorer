@@ -22,6 +22,13 @@ const LINKS = {
       fieldname: "key",
     },
   ],
+  scenes: [
+    {
+      route: "/scenes/$key",
+      param: "key",
+      fieldname: "key",
+    },
+  ],
 };
 
 function AppInfo(props) {
@@ -79,7 +86,7 @@ function AppDetails(props) {
           <Tab eventKey="objects" title="Objects">
             {metadataTable(
               "Objects",
-              ["name", "key", "identifier"],
+              ["name", "key"],
               metadata.objects,
               LINKS.objects
             )}
@@ -88,7 +95,8 @@ function AppDetails(props) {
             {metadataTable(
               "Scenes",
               ["name", "key", "slug", "parent"],
-              metadata.scenes
+              metadata.scenes,
+              LINKS.scenes
             )}
           </Tab>
           <Tab eventKey="views" title="Views">

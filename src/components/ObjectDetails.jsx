@@ -4,6 +4,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import BootstrapTable from "react-bootstrap/Table";
 import MetadataContext from "./MetadataContext";
+import Badge from "react-bootstrap/Badge";
 import { metadataTable } from "./utils";
 
 const LINKS = {
@@ -75,7 +76,7 @@ function ObjectDetails(props) {
     <>
       <Row>
         <Col>
-          <h1>{data.name}</h1>
+        <h2><Badge variant="info" className="text-monospace">Object</Badge> {data.name}</h2>
         </Col>
       </Row>
       <Row>
@@ -85,7 +86,12 @@ function ObjectDetails(props) {
         <Col>
           <Row>
             <Col>
-              {metadataTable("Fields", ["name", "key", "object"], data.fields, LINKS.fields)}
+              {metadataTable(
+                "Fields",
+                ["name", "key", "object"],
+                data.fields,
+                LINKS.fields
+              )}
             </Col>
           </Row>
         </Col>

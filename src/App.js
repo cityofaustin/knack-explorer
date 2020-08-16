@@ -11,6 +11,7 @@ import Spinner from "react-bootstrap/Spinner";
 import AppDetails from "./components/AppDetails";
 import ObjectDetails from "./components/ObjectDetails";
 import FieldDetails from "./components/FieldDetails";
+import SceneDetails from "./components/SceneDetails";
 import MetadataContext from "./components/MetadataContext";
 
 // const knackpyDev = "5d79512148c4af00106d1507";
@@ -143,7 +144,9 @@ function App() {
           <Row>
             <Col>
               <h1>
-                <Link to="/">Knack Explorer</Link>
+                <Link to="/" className="text-reset">
+                  Knack Explorer
+                </Link>
               </h1>
             </Col>
           </Row>
@@ -163,6 +166,11 @@ function App() {
           <Route path="/fields/:key">
             <MetadataContext.Provider value={metadata}>
               <FieldDetails />
+            </MetadataContext.Provider>
+          </Route>
+          <Route path="/scenes/:scene">
+            <MetadataContext.Provider value={metadata}>
+              <SceneDetails />
             </MetadataContext.Provider>
           </Route>
         </Container>
