@@ -101,7 +101,8 @@ function AppDetails(props) {
               "Objects",
               ["name", "key"],
               metadata.objects,
-              LINKS.objects
+              LINKS.objects,
+              true, // search
             )}
           </Tab>
           <Tab eventKey="scenes" title="Scenes">
@@ -109,7 +110,8 @@ function AppDetails(props) {
               "Scenes",
               ["name", "key", "slug", "parent"],
               metadata.scenes,
-              LINKS.scenes
+              LINKS.scenes,
+              true, // search
             )}
           </Tab>
           <Tab eventKey="views" title="Views">
@@ -117,7 +119,8 @@ function AppDetails(props) {
               "Views",
               ["name", "key", "type", "title", "scene"],
               metadata.views,
-              LINKS.views
+              LINKS.views,
+              true, // search
             )}
           </Tab>
           <Tab eventKey="fields" title="Fields">
@@ -125,7 +128,8 @@ function AppDetails(props) {
               "Fields",
               ["name", "key", "type", "required", "object"],
               metadata.fields,
-              LINKS.fields
+              LINKS.fields,
+              true, // search
             )}
           </Tab>
         </Tabs>

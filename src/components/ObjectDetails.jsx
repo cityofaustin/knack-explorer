@@ -115,7 +115,7 @@ function ObjectDetails(props) {
                 "Connections",
                 ["name", "object", "key", "direction", "has", "belongs_to"],
                 data.relationships,
-                LINKS
+                LINKS,
               )}
             </Col>
           </Row>
@@ -131,7 +131,7 @@ function ObjectDetails(props) {
           <Row>
             <Col>
               {metadataTable("Fields", ["name", "key"], data.fields, [
-                LINKS[0],
+                LINKS[0]
               ])}
             </Col>
           </Row>

@@ -29,11 +29,12 @@ export function getFieldDefs(obj, keys) {
   return fields;
 }
 
-export function metadataTable(title, fields, data, links) {
+export function metadataTable(title, fields, data, links, search=false) {
   let config = {
     title: title,
     fields: getFieldDefs(data[0], fields),
     links: links,
+    search: search
   };
   return <Table rows={data} {...config} />;
 }

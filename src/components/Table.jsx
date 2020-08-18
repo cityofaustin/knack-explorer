@@ -2,7 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
 import BootstrapTable from "react-bootstrap/Table";
+import { FaSearch } from "react-icons/fa";
 
 function generateHeaderRow(fields) {
   return (
@@ -38,14 +41,47 @@ function handleValue(row, field, links) {
   return newVal;
 }
 
+function filterRows(rows, val) {
+  if (val === "") return rows;
+  val = val.toLowerCase();
+  return rows.filter(
+    (row) =>
+      row.key.toLowerCase().includes(val) ||
+      row.name.toLowerCase().includes(val)
+  );
+}
+
 export default function Table(props) {
-  let rows = props.rows;
+  const [searchTerm, setSearchTerm] = React.useState("");
+
+  let rows = filterRows(props.rows, searchTerm);
   // todo: not tested with multiple links
   const links = props.links;
-
   return (
     <Row className="mb-2">
       <Col>
+        {props.search && (
+          <Form className="my-2">
+            <Form.Row>
+              <Col>
+                <InputGroup className="mb-2">
+                  <InputGroup.Prepend>
+                    <InputGroup.Text>
+                      <FaSearch />
+                    </InputGroup.Text>
+                  </InputGroup.Prepend>
+                  <Form.Control
+                    type="search"
+                    name="search"
+                    placeholder="Filter by name or key"
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </InputGroup>
+              </Col>
+              <Col></Col>
+            </Form.Row>
+          </Form>
+        )}
         <BootstrapTable striped size="sm">
           <thead className="thead-dark">
             {generateHeaderRow(props.fields)}

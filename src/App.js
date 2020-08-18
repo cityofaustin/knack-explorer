@@ -95,10 +95,10 @@ function AppSearch(props) {
   }
   return (
     <Row>
-      <Col md={6}>
+      <Col>
         <Form>
           <Form.Row>
-            <Col>
+            <Col s={12} md={7} lg={6} className="mb-2">
               <Form.Control
                 type="knack_app_id"
                 name="knack_app_id"
@@ -108,6 +108,7 @@ function AppSearch(props) {
             </Col>
             <Col>
               <Button
+                className="mb-2"
                 variant="primary"
                 type="submit"
                 onClick={(e) =>

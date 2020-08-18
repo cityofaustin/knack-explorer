@@ -120,19 +120,19 @@ function fieldInfo(data) {
             </tr>
             <tr>
               <td>User</td>
-              <td>{data.user}</td>
+              <td>{JSON.stringify(data.user)}</td>
             </tr>
             <tr>
               <td>Conditional</td>
-              <td>{data.conditional}</td>
+              <td>{JSON.stringify(data.conditional)}</td>
             </tr>
             <tr>
               <td>Rules</td>
-              <td>{data.rules}</td>
+              <td>{JSON.stringify(data.rules)}</td>
             </tr>
             <tr>
               <td>Validation</td>
-              <td>{data.validation}</td>
+              <td>{JSON.stringify(data.validation)}</td>
             </tr>
           </tbody>
         </BootstrapTable>
