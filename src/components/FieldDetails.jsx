@@ -34,35 +34,43 @@ function setPathLinks(path) {
   path = path.map((pathComponentString, i) => {
     if (pathComponentString.includes("scene_")) {
       return (
-        <span key={i} >
+        <span key={i}>
           {" > "}
-          <Link key={i} to={`/scenes/${pathComponentString}`}>{pathComponentString}</Link>
+          <Link key={i} to={`/scenes/${pathComponentString}`}>
+            {pathComponentString}
+          </Link>
         </span>
       );
     } else if (pathComponentString.includes("object_")) {
       return (
-        <span key={i} >
+        <span key={i}>
           {" > "}
-          <Link key={i} to={`/objects/${pathComponentString}`}>{pathComponentString}</Link>
+          <Link key={i} to={`/objects/${pathComponentString}`}>
+            {pathComponentString}
+          </Link>
         </span>
       );
     } else if (pathComponentString.includes("field_")) {
       return (
-        <span key={i} >
+        <span key={i}>
           {" > "}
-          <Link key={i} to={`/fields/${pathComponentString}`}>{pathComponentString}</Link>
+          <Link key={i} to={`/fields/${pathComponentString}`}>
+            {pathComponentString}
+          </Link>
         </span>
       );
     } else if (pathComponentString.includes("view_")) {
       return (
-        <span key={i} >
+        <span key={i}>
           {" > "}
-          <Link key={i} to={`/views/${pathComponentString}`}>{pathComponentString}</Link>
+          <Link key={i} to={`/views/${pathComponentString}`}>
+            {pathComponentString}
+          </Link>
         </span>
       );
     } else {
       return (
-        <span key={i} >
+        <span key={i}>
           {" > "}
           {pathComponentString}
         </span>
@@ -191,7 +199,16 @@ function FieldDetails(props) {
       <Row>
         <Col>{fieldInfo(data)}</Col>
       </Row>
-      {instances && <Table rows={instances} {...tableConfig} />}
+      {instances && (
+        <>
+          <Row>
+            <Col>
+              <h4>Appears In</h4>
+            </Col>
+          </Row>
+          <Table rows={instances} {...tableConfig} />
+        </>
+      )}
     </>
   );
 }
