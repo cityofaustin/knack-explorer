@@ -14,7 +14,7 @@ function viewInfo(data) {
   return (
     <Row>
       <Col>
-        <BootstrapTable striped bordered hover>
+        <BootstrapTable hover>
           <tbody>
             <tr>
               <td>Name</td>
@@ -52,12 +52,12 @@ function ViewDetails(props) {
     <>
       <Row>
         <Col>
-          <h2>
+          <h3>
             <Badge variant="info" className="text-monospace">
               View
             </Badge>{" "}
             {data.name}
-          </h2>
+          </h3>
         </Col>
       </Row>
       <Row>

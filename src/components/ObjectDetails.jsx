@@ -7,15 +7,32 @@ import MetadataContext from "./MetadataContext";
 import Badge from "react-bootstrap/Badge";
 import { metadataTable } from "./utils";
 
-const LINKS = {
-  fields: [
-    {
-      route: "/fields/$key",
-      param: "key",
-      fieldname: "key",
-    },
-  ],
-};
+const LINKS = [
+  {
+    route: "/fields/$key",
+    param: "key",
+    fieldname: "key",
+  },
+  {
+    route: "/objects/$object",
+    param: "object",
+    fieldname: "object",
+  },
+];
+
+function handleConnections(data) {
+  let inbound = data.connections.inbound.map((conn) => {
+    conn.direction = "inbound";
+    return conn;
+  });
+
+  let outbound = data.connections.outbound.map((conn) => {
+    conn.direction = "outbound";
+    return conn;
+  });
+
+  return [...inbound, ...outbound];
+}
 
 function findObject(objects, key) {
   return objects.filter((obj) => obj.key === key)[0];
@@ -43,10 +60,6 @@ function objInfo(data) {
               <td>Tasks</td>
               <td>{JSON.stringify(data.tasks)}</td>
             </tr>
-            <tr>
-              <td>Connections</td>
-              <td>{JSON.stringify(data.connections)}</td>
-            </tr>
           </tbody>
         </BootstrapTable>
       </Col>
@@ -70,38 +83,60 @@ function ObjectDetails(props) {
     );
   }
 
-  const data = findObject(metadata.objects, key);
+  let data = findObject(metadata.objects, key);
+
+  data.relationships = handleConnections(data);
 
   return (
     <>
       <Row>
         <Col>
-          <h2>
+          <h3>
             <Badge variant="info" className="text-monospace">
               Object
             </Badge>{" "}
             {data.name}
-          </h2>
+          </h3>
         </Col>
       </Row>
       <Row>
         <Col>{objInfo(data)}</Col>
       </Row>
-      <Row>
-        <Col>
-          <h3>Fields</h3>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          {metadataTable(
-            "Fields",
-            ["name", "key", "object"],
-            data.fields,
-            LINKS.fields
-          )}
-        </Col>
-      </Row>
+      {data.relationships && data.relationships.length > 0 && (
+        <>
+          <Row>
+            <Col>
+              <h4>Connections</h4>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              {metadataTable(
+                "Connections",
+                ["name", "object", "key", "direction", "has", "belongs_to"],
+                data.relationships,
+                LINKS
+              )}
+            </Col>
+          </Row>
+        </>
+      )}
+      {data.fields && data.fields.length > 0 && (
+        <>
+          <Row>
+            <Col>
+              <h4>Fields</h4>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              {metadataTable("Fields", ["name", "key"], data.fields, [
+                LINKS[0],
+              ])}
+            </Col>
+          </Row>
+        </>
+      )}
     </>
   );
 }

@@ -4,7 +4,6 @@ import Col from "react-bootstrap/Col";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import BootstrapTable from "react-bootstrap/Table";
-import Search from "./Search";
 import { metadataTable } from "./utils";
 
 const LINKS = {
@@ -28,12 +27,22 @@ const LINKS = {
       param: "key",
       fieldname: "key",
     },
+    {
+      route: "/scenes/$scene",
+      param: "scene",
+      fieldname: "scene",
+    },
   ],
   fields: [
     {
       route: "/fields/$key",
       param: "key",
       fieldname: "key",
+    },
+    {
+      route: "/objects/$object",
+      param: "object",
+      fieldname: "object",
     },
   ],
 };
@@ -44,7 +53,7 @@ function AppInfo(props) {
   return (
     <Row>
       <Col>
-        <BootstrapTable striped bordered hover>
+        <BootstrapTable hover>
           <tbody>
             <tr>
               <td>Name</td>
@@ -87,9 +96,6 @@ function AppDetails(props) {
           <Tab eventKey="info" title="Info">
             <AppInfo meta={metadata} />
           </Tab>
-          <Tab eventKey="search" title="Search">
-            <Search metadata={metadata} />
-          </Tab>
           <Tab eventKey="objects" title="Objects">
             {metadataTable(
               "Objects",
@@ -117,7 +123,7 @@ function AppDetails(props) {
           <Tab eventKey="fields" title="Fields">
             {metadataTable(
               "Fields",
-              ["name", "key", "object"],
+              ["name", "key", "type", "required", "object"],
               metadata.fields,
               LINKS.fields
             )}
