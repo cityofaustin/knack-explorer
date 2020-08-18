@@ -5,6 +5,8 @@ import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import BootstrapTable from "react-bootstrap/Table";
 import { metadataTable } from "./utils";
+import { FaInfoCircle, FaDatabase, FaTable } from "react-icons/fa";
+import { BsTextarea, BsLayoutTextWindowReverse } from "react-icons/bs";
 
 const LINKS = {
   objects: [
@@ -93,39 +95,44 @@ function AppDetails(props) {
           activeKey={tabKey}
           onSelect={(k) => setTabKey(k)}
         >
-          <Tab eventKey="info" title="Info">
+          <Tab eventKey="info" title={<>< FaInfoCircle /> Info</>}>
             <AppInfo meta={metadata} />
           </Tab>
-          <Tab eventKey="objects" title="Objects">
+          <Tab eventKey="objects" title={<>< FaDatabase /> Objects</>}>
             {metadataTable(
               "Objects",
               ["name", "key"],
               metadata.objects,
-              LINKS.objects
+              LINKS.objects,
+              true, // search
             )}
           </Tab>
-          <Tab eventKey="scenes" title="Scenes">
+          <Tab eventKey="scenes" title={<>< BsLayoutTextWindowReverse /> Scenes</>}>
             {metadataTable(
               "Scenes",
               ["name", "key", "slug", "parent"],
               metadata.scenes,
-              LINKS.scenes
+              LINKS.scenes,
+              true, // search
             )}
           </Tab>
-          <Tab eventKey="views" title="Views">
+          <Tab eventKey="views" title={<>< FaTable /> Views</>}>
             {metadataTable(
               "Views",
               ["name", "key", "type", "title", "scene"],
               metadata.views,
-              LINKS.views
+              LINKS.views,
+              true, // search
             )}
           </Tab>
-          <Tab eventKey="fields" title="Fields">
+          
+            <Tab eventKey="fields" title={<>< BsTextarea /> Fields</>}>
             {metadataTable(
               "Fields",
               ["name", "key", "type", "required", "object"],
               metadata.fields,
-              LINKS.fields
+              LINKS.fields,
+              true, // search
             )}
           </Tab>
         </Tabs>
