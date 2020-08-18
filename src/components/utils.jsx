@@ -4,8 +4,13 @@ import Table from "./Table";
 export function getDataType(val) {
   // determine the data type of the value, which will be
   // assigned to the field definitiation so that it can be rendered properly
-  const dataType = typeof val === "object" && val !== null ? "json" : "text";
-  return dataType;
+  const type = typeof val;
+  if (type === "object" && val !== null) {
+    return "json"
+  } else if (type === "boolean") {
+    return "bool"
+  }
+  return "text";
 }
 
 export function getFieldDefs(obj, keys) {

@@ -19,8 +19,10 @@ function handleValue(row, field, links) {
   let val = row[field.name];
 
   if (!links || field.data_type === "json") {
-    // cannot use a json field as a link!
+    // cannot use a json field or bool as a link
     return field.data_type === "json" ? JSON.stringify(val) : val;
+  } else if (field.data_type === "bool") {
+    return val.toString();
   }
 
   let newVal = val;

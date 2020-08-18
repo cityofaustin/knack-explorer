@@ -66,12 +66,12 @@ function SceneDetails(props) {
     <>
       <Row>
         <Col>
-          <h2>
+          <h3>
             <Badge variant="info" className="text-monospace">
               Scene
             </Badge>{" "}
             {data.name}
-          </h2>
+          </h3>
         </Col>
       </Row>
       <Row>
@@ -79,7 +79,7 @@ function SceneDetails(props) {
       </Row>
       <Row>
         <Col>
-          <h3>Views</h3>
+          <h4>Views</h4>
         </Col>
       </Row>
       <Row>

@@ -4,9 +4,74 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Badge from "react-bootstrap/Badge";
 import BootstrapTable from "react-bootstrap/Table";
+import Table from "./Table";
 import MetadataContext from "./MetadataContext";
 
-  
+function findInstances(obj, val, path = []) {
+  // modified this: https://gist.github.com/YagoLopez/1c2fe87d255fc64d5f1bf6a920b67484
+  // to include path
+  var objects = [];
+  // var lastkey = Array.isArray(obj)
+  for (var i in obj) {
+    // clone the path
+    var newPath = path.slice();
+
+    if (!obj.hasOwnProperty(i)) {
+      continue;
+    }
+    if (typeof obj[i] === "object") {
+      const pathKey = obj[i] === null ? i : obj[i].key || i;
+      newPath.push(pathKey);
+      objects = objects.concat(findInstances(obj[i], val, newPath));
+    } else if (obj[i] === val) {
+      objects.push({ key: i, path: newPath });
+    }
+  }
+  return objects;
+}
+
+function setPathLinks(path) {
+  path = path.map((pathComponentString, i) => {
+    if (pathComponentString.includes("scene_")) {
+      return (
+        <span key={i} >
+          {" > "}
+          <Link key={i} to={`/scenes/${pathComponentString}`}>{pathComponentString}</Link>
+        </span>
+      );
+    } else if (pathComponentString.includes("object_")) {
+      return (
+        <span key={i} >
+          {" > "}
+          <Link key={i} to={`/objects/${pathComponentString}`}>{pathComponentString}</Link>
+        </span>
+      );
+    } else if (pathComponentString.includes("field_")) {
+      return (
+        <span key={i} >
+          {" > "}
+          <Link key={i} to={`/fields/${pathComponentString}`}>{pathComponentString}</Link>
+        </span>
+      );
+    } else if (pathComponentString.includes("view_")) {
+      return (
+        <span key={i} >
+          {" > "}
+          <Link key={i} to={`/views/${pathComponentString}`}>{pathComponentString}</Link>
+        </span>
+      );
+    } else {
+      return (
+        <span key={i} >
+          {" > "}
+          {pathComponentString}
+        </span>
+      );
+    }
+  });
+  return <span>{path.map((p) => p)}</span>;
+}
+
 function findField(fields, key) {
   return fields.filter((field) => field.key === key)[0];
 }
@@ -24,10 +89,14 @@ function fieldInfo(data) {
             <tr>
               <td>Key</td>
               <td>{data.key}</td>
-                      </tr>
-                      <tr>
+            </tr>
+            <tr>
               <td>Object</td>
-                          <td><Link to={`/objects/${data.object_key}`}>{data.object_key}</Link></td>
+              <td>
+                <Link to={`/objects/${data.object_key}`}>
+                  {data.object_key}
+                </Link>
+              </td>
             </tr>
             <tr>
               <td>Type</td>
@@ -73,7 +142,7 @@ function FieldDetails(props) {
       <Row>
         <Col>
           <p>
-            Metadata not loaded. Please go <a href="/">home</a>.
+            Metadata not loaded. Please go <Link to="/">home</Link>.
           </p>
         </Col>
       </Row>
@@ -82,16 +151,47 @@ function FieldDetails(props) {
 
   const data = findField(metadata.fields, key);
 
+  let instances = findInstances(metadata, key);
+
+  instances = instances.map((instance) => {
+    instance.path = setPathLinks(instance.path);
+    return instance;
+  });
+
+  let tableConfig = {
+    title: "Appears In",
+    fields: [
+      {
+        id: 1,
+        name: "path",
+        label: "Path",
+        data_type: "jsx",
+      },
+      {
+        id: 2,
+        name: "key",
+        label: "Key",
+        data_type: "text",
+      },
+    ],
+  };
+
   return (
     <>
       <Row>
         <Col>
-          <h2><Badge variant="info" className="text-monospace">Field</Badge> {data.name}</h2>
+          <h3>
+            <Badge variant="info" className="text-monospace">
+              Field
+            </Badge>{" "}
+            {data.name}
+          </h3>
         </Col>
       </Row>
       <Row>
         <Col>{fieldInfo(data)}</Col>
       </Row>
+      {instances && <Table rows={instances} {...tableConfig} />}
     </>
   );
 }

@@ -10,9 +10,9 @@ import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 import AppDetails from "./components/AppDetails";
 import ObjectDetails from "./components/ObjectDetails";
-import FieldDetails from "./components/FieldDetails";
 import SceneDetails from "./components/SceneDetails";
 import ViewDetails from "./components/ViewDetails";
+import FieldDetails from "./components/FieldDetails";
 import MetadataContext from "./components/MetadataContext";
 
 // const knackpyDev = "5d79512148c4af00106d1507";
@@ -48,10 +48,19 @@ function extractViews(metadata) {
 
 function getMetadata(e, appId, setMetadata, setLoading, setError) {
   e.preventDefault();
+  if (!appId) {
+    setError("Invalid application id.");
+    return null;
+  }
   setLoading(true);
   const url = `https://api.knack.com/v1/applications/${appId}`;
   fetch(url)
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      return response.json();
+    })
     .then((data) => {
       let metadata = data.application;
       metadata.views = extractViews(metadata);
@@ -60,7 +69,8 @@ function getMetadata(e, appId, setMetadata, setLoading, setError) {
       setLoading(false);
     })
     .catch((error) => {
-      setError(error);
+      setError(error.toString());
+      return null;
     });
 }
 
@@ -69,10 +79,6 @@ function AppSearch(props) {
   const metadata = props.metadata;
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
-
-  if (error) {
-    return <Alert>{error}</Alert>;
-  }
 
   if (metadata && metadata.id) {
     return (
@@ -84,6 +90,9 @@ function AppSearch(props) {
     );
   }
 
+  if (error && loading) {
+    setLoading(false);
+  }
   return (
     <Row>
       <Col md={6}>
@@ -122,6 +131,7 @@ function AppSearch(props) {
             </Col>
           </Form.Row>
         </Form>
+        {error && <Alert variant="danger">{error}</Alert>}
       </Col>
     </Row>
   );
@@ -137,15 +147,27 @@ function App() {
     <Router>
       <Switch>
         <Container>
-          <Row>
-            <Col>
+          <Row className="justify-content-between">
+            <Col md={10}>
               <h1>
                 <Link to="/" className="text-reset">
-                  Knack Explorer
+                  {(metadata && metadata.name) || "Knack Explorer"}
                 </Link>
               </h1>
             </Col>
+            {metadata && (
+              <Col md={2} className="mt-2 text-right">
+                <Button
+                  size="sm"
+                  variant="outline-primary"
+                  onClick={() => setMetadata(null)}
+                >
+                  <Link to="/">Start Over</Link>
+                </Button>
+              </Col>
+            )}
           </Row>
+
           <Route exact path="/">
             <AppSearch
               metadata={metadata}
