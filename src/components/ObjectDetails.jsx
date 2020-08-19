@@ -130,7 +130,7 @@ function ObjectDetails(props) {
           </Row>
           <Row>
             <Col>
-              {metadataTable("Fields", ["name", "key"], data.fields, [
+              {metadataTable("Fields", ["name", "key", "type"], data.fields, [
                 LINKS[0]
               ])}
             </Col>
