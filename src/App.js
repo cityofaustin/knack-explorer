@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
+import Jumbotron from "react-bootstrap/Jumbotron";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
@@ -82,59 +83,83 @@ function AppSearch(props) {
 
   if (metadata && metadata.id) {
     return (
-      <AppDetails
-        metadata={metadata}
-        tabKey={props.tabKey}
-        setTabKey={props.setTabKey}
-      />
+      <Container>
+        <AppDetails
+          metadata={metadata}
+          tabKey={props.tabKey}
+          setTabKey={props.setTabKey}
+        />
+      </Container>
     );
   }
 
   if (error && loading) {
     setLoading(false);
   }
+
   return (
-    <Row>
-      <Col>
-        <Form>
-          <Form.Row>
-            <Col s={12} md={7} lg={6} className="mb-2">
-              <Form.Control
-                type="knack_app_id"
-                name="knack_app_id"
-                placeholder="Enter an app ID"
-                onChange={(e) => setAppId(e.target.value)}
-              />
-            </Col>
+    <>
+      <Container fluid className="bg-dark text-white vh-100">
+        <Row>
+          <Col className="text-right">
+            <Link className="text-reset" to="/about">
+              About
+            </Link>
+          </Col>
+        </Row>
+        <Container>
+          <Jumbotron className="bg-dark text-white vh-100">
             <Col>
-              <Button
-                className="mb-2"
-                variant="primary"
-                type="submit"
-                onClick={(e) =>
-                  getMetadata(e, appId, props.setMetadata, setLoading, setError)
-                }
-              >
-                {loading && (
-                  <>
-                    <Spinner
-                      as="span"
-                      animation="border"
-                      size="sm"
-                      role="status"
-                      aria-hidden="true"
+              <h1>Knack Explorer</h1>
+              <p>Explore your Knack application's metadata.</p>
+              <Form>
+                <Form.Row>
+                  <Col s={12} md={7} lg={6} className="mb-2">
+                    <Form.Control
+                      type="knack_app_id"
+                      name="knack_app_id"
+                      placeholder="Enter an app ID"
+                      onChange={(e) => setAppId(e.target.value)}
                     />
-                    <span className="sr-only">Loading...</span>
-                  </>
-                )}
-                {!loading && "Load app"}
-              </Button>
+                  </Col>
+                  <Col>
+                    <Button
+                      className="mb-2"
+                      variant="primary"
+                      type="submit"
+                      onClick={(e) =>
+                        getMetadata(
+                          e,
+                          appId,
+                          props.setMetadata,
+                          setLoading,
+                          setError
+                        )
+                      }
+                    >
+                      {loading && (
+                        <>
+                          <Spinner
+                            as="span"
+                            animation="border"
+                            size="sm"
+                            role="status"
+                            aria-hidden="true"
+                          />
+                          <span className="sr-only">Loading...</span>
+                        </>
+                      )}
+                      {!loading && "Load app"}
+                    </Button>
+                  </Col>
+                </Form.Row>
+              </Form>
+              {error && <Alert variant="danger">{error}</Alert>}
             </Col>
-          </Form.Row>
-        </Form>
-        {error && <Alert variant="danger">{error}</Alert>}
-      </Col>
-    </Row>
+          </Jumbotron>
+        </Container>
+      </Container>
+    </>
   );
 }
 
@@ -146,37 +171,53 @@ function App() {
 
   return (
     <Router>
-      <Switch>
-        <Container>
-          <Row className="justify-content-between">
-            <Col md={10}>
-              <h1>
-                <Link to="/" className="text-reset">
-                  {(metadata && metadata.name) || "Knack Explorer"}
-                </Link>
-              </h1>
-            </Col>
-            {metadata && (
-              <Col md={2} className="mt-2 text-right">
+      {metadata && (
+        <>
+          <Container fluid key={1}>
+            <Row className="bg-dark justify-content-between pt-2">
+              <Col>
+                <h4 className="text-white">
+                  <Link to="/" className="text-reset">
+                    Knack Explorer
+                  </Link>
+                </h4>
+              </Col>
+              <Col md={2} className="text-warning text-right">
                 <Button
                   size="sm"
-                  variant="outline-primary"
+                  variant="outline-warning"
                   onClick={() => setMetadata(null)}
                 >
-                  <Link to="/">Start Over</Link>
+                  <Link className="text-warning" to="/">
+                    Start Over
+                  </Link>
                 </Button>
               </Col>
-            )}
-          </Row>
-
-          <Route exact path="/">
-            <AppSearch
-              metadata={metadata}
-              setMetadata={setMetadata}
-              tabKey={tabKey}
-              setTabKey={setTabKey}
-            />
-          </Route>
+            </Row>
+          </Container>
+          <Container>
+            <Row className="mt-2">
+              <Col>
+                <h3>
+                  <Link to="/" className="text-reset">
+                    {metadata.name}
+                  </Link>
+                </h3>
+              </Col>
+            </Row>
+          </Container>
+        </>
+      )}
+      <Switch>
+        <Route exact path="/">
+          <AppSearch
+            metadata={metadata}
+            setMetadata={setMetadata}
+            tabKey={tabKey}
+            setTabKey={setTabKey}
+          />
+        </Route>
+        <Container>
           <MetadataContext.Provider value={metadata}>
             <Route path="/objects/:key">
               <ObjectDetails />
@@ -192,6 +233,38 @@ function App() {
             </Route>
           </MetadataContext.Provider>
         </Container>
+      </Switch>
+      <Switch>
+        <Route path="/about">
+          <Container fluid className="bg-dark text-white vh-100">
+          <Row>
+          <Col className="text-right">
+            <Link className="text-reset" to="/">
+              Home
+            </Link>
+          </Col>
+        </Row>
+            <Container>
+            <Row className="bg-dark text-white">
+                <Col>
+                  <h3>About Knack Explorer</h3>
+                <p className="text-light font-weight-light">
+                  This project is maintained by the
+                  <a className="text-warning" href="https://data.mobility.austin.gov/about">
+                    {" "}
+                    City of Austin Transportation Department
+                  </a>
+                  . It's free to use and the{" "}
+                  <a className="text-warning" href="https://github.com/cityofaustin/knack-explorer">
+                    source code
+                  </a>{" "}
+                  is in the public domain.
+                </p>
+              </Col>
+              </Row>
+              </Container>
+          </Container>
+        </Route>
       </Switch>
     </Router>
   );
