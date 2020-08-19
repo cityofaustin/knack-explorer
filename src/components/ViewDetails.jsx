@@ -53,7 +53,7 @@ function ViewDetails(props) {
       <Row>
         <Col>
           <h3>
-            <Badge variant="info" className="text-monospace">
+            <Badge variant="warning" className="text-monospace">
               View
             </Badge>{" "}
             {data.name}
