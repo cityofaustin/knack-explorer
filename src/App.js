@@ -15,6 +15,7 @@ import SceneDetails from "./components/SceneDetails";
 import ViewDetails from "./components/ViewDetails";
 import FieldDetails from "./components/FieldDetails";
 import MetadataContext from "./components/MetadataContext";
+import { FaAngleDoubleRight } from "react-icons/fa";
 
 // const knackpyDev = "5d79512148c4af00106d1507";
 // const dataTracker = "5815f29f7f7252cc2ca91c4f"
@@ -99,7 +100,7 @@ function AppSearch(props) {
 
   return (
     <>
-      <Container fluid className="bg-dark text-white vh-100">
+      <Container fluid className="bg-info text-white vh-100">
         <Row>
           <Col className="text-right">
             <Link className="text-reset" to="/about">
@@ -108,7 +109,7 @@ function AppSearch(props) {
           </Col>
         </Row>
         <Container>
-          <Jumbotron className="bg-dark text-white vh-100">
+          <Jumbotron className="bg-info text-white vh-100">
             <Col>
               <h1>Knack Explorer</h1>
               <p>Explore your Knack application's metadata.</p>
@@ -125,7 +126,7 @@ function AppSearch(props) {
                   <Col>
                     <Button
                       className="mb-2"
-                      variant="primary"
+                      variant="warning"
                       type="submit"
                       onClick={(e) =>
                         getMetadata(
@@ -149,7 +150,7 @@ function AppSearch(props) {
                           <span className="sr-only">Loading...</span>
                         </>
                       )}
-                      {!loading && "Load app"}
+                      {!loading && <>Explore app <FaAngleDoubleRight/></>}
                     </Button>
                   </Col>
                 </Form.Row>
@@ -174,7 +175,7 @@ function App() {
       {metadata && (
         <>
           <Container fluid key={1}>
-            <Row className="bg-dark justify-content-between pt-2">
+            <Row className="bg-info justify-content-between pt-2">
               <Col>
                 <h4 className="text-white">
                   <Link to="/" className="text-reset">
