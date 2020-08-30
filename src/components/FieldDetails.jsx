@@ -1,11 +1,16 @@
 import React from "react";
 import { Link, useRouteMatch } from "react-router-dom";
+import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Spinner from "react-bootstrap/Spinner";
 import Badge from "react-bootstrap/Badge";
+import Alert from "react-bootstrap/Alert";
 import BootstrapTable from "react-bootstrap/Table";
 import Table from "./Table";
 import MetadataContext from "./MetadataContext";
+import Nav from "./Nav";
+import { getMetadata } from "./getMetadata";
 
 function findInstances(obj, val, path = []) {
   // modified this: https://gist.github.com/YagoLopez/1c2fe87d255fc64d5f1bf6a920b67484
@@ -30,13 +35,13 @@ function findInstances(obj, val, path = []) {
   return objects;
 }
 
-function setPathLinks(path) {
+function setPathLinks(path, appId) {
   path = path.map((pathComponentString, i) => {
     if (pathComponentString.includes("scene_")) {
       return (
         <span key={i}>
           {" > "}
-          <Link key={i} to={`/scenes/${pathComponentString}`}>
+          <Link key={i} to={`/${appId}/scenes/${pathComponentString}`}>
             {pathComponentString}
           </Link>
         </span>
@@ -45,7 +50,7 @@ function setPathLinks(path) {
       return (
         <span key={i}>
           {" > "}
-          <Link key={i} to={`/objects/${pathComponentString}`}>
+          <Link key={i} to={`/${appId}/objects/${pathComponentString}`}>
             {pathComponentString}
           </Link>
         </span>
@@ -54,7 +59,7 @@ function setPathLinks(path) {
       return (
         <span key={i}>
           {" > "}
-          <Link key={i} to={`/fields/${pathComponentString}`}>
+          <Link key={i} to={`/${appId}/fields/${pathComponentString}`}>
             {pathComponentString}
           </Link>
         </span>
@@ -63,7 +68,7 @@ function setPathLinks(path) {
       return (
         <span key={i}>
           {" > "}
-          <Link key={i} to={`/views/${pathComponentString}`}>
+          <Link key={i} to={`/${appId}/views/${pathComponentString}`}>
             {pathComponentString}
           </Link>
         </span>
@@ -84,7 +89,7 @@ function findField(fields, key) {
   return fields.filter((field) => field.key === key)[0];
 }
 
-function fieldInfo(data) {
+function fieldInfo(data, appId) {
   return (
     <Row>
       <Col>
@@ -101,7 +106,7 @@ function fieldInfo(data) {
             <tr>
               <td>Object</td>
               <td>
-                <Link to={`/objects/${data.object_key}`}>
+                <Link to={`/${appId}/objects/${data.object_key}`}>
                   {data.object_key}
                 </Link>
               </td>
@@ -142,27 +147,46 @@ function fieldInfo(data) {
 }
 
 function FieldDetails(props) {
-  const metadata = React.useContext(MetadataContext);
+  const context = React.useContext(MetadataContext);
+  const metadata = context.metadata;
+  const setMetadata = context.setMetadata;
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState(false);
+  const matches = useRouteMatch("/:app_id/fields/:key");
+  const key = matches.params.key;
+  const appId = matches.params.app_id;
+  let data, instances;
 
-  const key = useRouteMatch("/fields/:key").params.key;
-  if (!metadata) {
+  if (error) {
+    return <Alert variant="danger">{error}</Alert>;
+  }
+
+  if (!metadata && !loading && !error) {
+    getMetadata(null, appId, setMetadata, setLoading, setError);
+  }
+
+  if (!metadata && !error) {
     return (
-      <Row>
-        <Col>
-          <p>
-            Metadata not loaded. Please go <Link to="/">home</Link>.
-          </p>
-        </Col>
-      </Row>
+      <>
+        <Spinner
+          as="span"
+          animation="border"
+          size="sm"
+          role="status"
+          aria-hidden="true"
+        />
+        <span className="sr-only">Loading...</span>
+      </>
     );
   }
 
-  const data = findField(metadata.fields, key);
-
-  let instances = findInstances(metadata, key);
+  if (metadata) {
+    data = findField(metadata.fields, key);
+    instances = findInstances(metadata, key);
+  }
 
   instances = instances.map((instance) => {
-    instance.path = setPathLinks(instance.path);
+    instance.path = setPathLinks(instance.path, appId);
     return instance;
   });
 
@@ -186,29 +210,32 @@ function FieldDetails(props) {
 
   return (
     <>
-      <Row>
-        <Col>
-          <h3>
-            <Badge variant="warning" className="text-monospace">
-              Field
-            </Badge>{" "}
-            {data.name}
-          </h3>
-        </Col>
-      </Row>
-      <Row>
-        <Col>{fieldInfo(data)}</Col>
-      </Row>
-      {instances && (
-        <>
-          <Row>
-            <Col>
-              <h4>Appears In</h4>
-            </Col>
-          </Row>
-          <Table rows={instances} {...tableConfig} />
-        </>
-      )}
+      <Nav metadata={metadata} setMetadata={setMetadata} />
+      <Container>
+        <Row>
+          <Col>
+            <h3>
+              <Badge variant="warning" className="text-monospace">
+                Field
+              </Badge>{" "}
+              {data.name}
+            </h3>
+          </Col>
+        </Row>
+        <Row>
+          <Col>{fieldInfo(data, appId)}</Col>
+        </Row>
+        {instances && (
+          <>
+            <Row>
+              <Col>
+                <h4>Appears In</h4>
+              </Col>
+            </Row>
+            <Table rows={instances} {...tableConfig} />
+          </>
+        )}
+      </Container>
     </>
   );
 }
