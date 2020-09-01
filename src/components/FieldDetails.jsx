@@ -35,14 +35,19 @@ function findInstances(obj, val, path = []) {
   return objects;
 }
 
-function setPathLinks(path, appId) {
+function arraySearch(search_key, return_key, match_val, arr) {
+  // assumes the array contains one and only one value of the matching key/val
+  return arr.filter(elem => elem[search_key] === match_val)[0][return_key]
+}
+
+function setPathLinks(path, appId, metadata) {
   path = path.map((pathComponentString, i) => {
     if (pathComponentString.includes("scene_")) {
       return (
         <span key={i}>
           {" > "}
           <Link key={i} to={`/${appId}/scenes/${pathComponentString}`}>
-            {pathComponentString}
+            {arraySearch("key", "name", pathComponentString, metadata.scenes)}
           </Link>
         </span>
       );
@@ -51,7 +56,7 @@ function setPathLinks(path, appId) {
         <span key={i}>
           {" > "}
           <Link key={i} to={`/${appId}/objects/${pathComponentString}`}>
-            {pathComponentString}
+          {arraySearch("key", "name", pathComponentString, metadata.objects)}
           </Link>
         </span>
       );
@@ -60,7 +65,7 @@ function setPathLinks(path, appId) {
         <span key={i}>
           {" > "}
           <Link key={i} to={`/${appId}/fields/${pathComponentString}`}>
-            {pathComponentString}
+          {arraySearch("key", "name", pathComponentString, metadata.fields)}
           </Link>
         </span>
       );
@@ -69,7 +74,7 @@ function setPathLinks(path, appId) {
         <span key={i}>
           {" > "}
           <Link key={i} to={`/${appId}/views/${pathComponentString}`}>
-            {pathComponentString}
+          {arraySearch("key", "name", pathComponentString, metadata.views)}
           </Link>
         </span>
       );
@@ -186,7 +191,7 @@ function FieldDetails(props) {
   }
 
   instances = instances.map((instance) => {
-    instance.path = setPathLinks(instance.path, appId);
+    instance.path = setPathLinks(instance.path, appId, metadata);
     return instance;
   });
 
