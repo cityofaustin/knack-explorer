@@ -110,42 +110,9 @@ function App() {
   const [appId, setAppId] = React.useState(null);
   // set the default tab to display after app load
   // this state persists after the user navigates away from the home page
-  
+
   return (
     <Router>
-      <Switch>
-        <Route exact path="/">
-          {metadata && <Redirect push from="/" to={`/${metadata.id}`} />}
-          <AppSearch
-            metadata={metadata}
-            setMetadata={setMetadata}
-            setAppId={setAppId}
-            appId={appId}
-          />
-        </Route>
-        <MetadataContext.Provider
-          value={{ metadata: metadata, setMetadata: setMetadata }}
-        >
-          <Route exact path={`/:app_id`}>
-            <AppDetails
-              metadata={metadata}
-              setMetadata={setMetadata}
-            />
-          </Route>
-          <Route path={`/:app_id/objects/:key`}>
-            <ObjectDetails />
-          </Route>
-          <Route path={`/:app_id/fields/:key`}>
-            <FieldDetails />
-          </Route>
-          <Route path={`/:app_id/scenes/:key`}>
-            <SceneDetails />
-          </Route>
-          <Route path={`/:app_id/views/:key`}>
-            <ViewDetails />
-          </Route>
-        </MetadataContext.Provider>
-      </Switch>
       <Switch>
         <Route path="/about">
           <Container fluid className="bg-dark text-white vh-100">
@@ -183,6 +150,34 @@ function App() {
             </Container>
           </Container>
         </Route>
+        <Route exact path="/">
+          {metadata && <Redirect push from="/" to={`/${metadata.id}`} />}
+          <AppSearch
+            metadata={metadata}
+            setMetadata={setMetadata}
+            setAppId={setAppId}
+            appId={appId}
+          />
+        </Route>
+        <MetadataContext.Provider
+          value={{ metadata: metadata, setMetadata: setMetadata }}
+        >
+          <Route exact path={`/:app_id`}>
+            <AppDetails metadata={metadata} setMetadata={setMetadata} />
+          </Route>
+          <Route path={`/:app_id/objects/:key`}>
+            <ObjectDetails />
+          </Route>
+          <Route path={`/:app_id/fields/:key`}>
+            <FieldDetails />
+          </Route>
+          <Route path={`/:app_id/scenes/:key`}>
+            <SceneDetails />
+          </Route>
+          <Route path={`/:app_id/views/:key`}>
+            <ViewDetails />
+          </Route>
+        </MetadataContext.Provider>
       </Switch>
     </Router>
   );
