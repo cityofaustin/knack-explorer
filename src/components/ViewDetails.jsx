@@ -26,7 +26,6 @@ function viewInfo(data, appId, metadata) {
   const accountSlug = metadata.account.slug;
   const appSlug = metadata.slug;
   const builderUrl = `https://builder.knack.com/${accountSlug}/${appSlug}/pages/${sceneKey}/views/${data.key}/${data.type}`
-  console.log(builderUrl)
 
   return (
     <Row>
