@@ -25,7 +25,8 @@ function viewInfo(data, appId, metadata) {
   const sceneName = arraySearch("key", "name", sceneKey, metadata.scenes);
   const accountSlug = metadata.account.slug;
   const appSlug = metadata.slug;
-  const builderUrl = `https://builder.knack.com/${accountSlug}/${appSlug}#pages/${sceneKey}/views/${data.key}`
+  const builderUrl = `https://builder.knack.com/${accountSlug}/${appSlug}/pages/${sceneKey}/views/${data.key}/${data.type}`
+  console.log(builderUrl)
 
   return (
     <Row>
