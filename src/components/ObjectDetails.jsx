@@ -60,7 +60,7 @@ function objInfo(data) {
               <td>{JSON.stringify(data.inflections)}</td>
             </tr>
             <tr>
-              <td>SOrt</td>
+              <td>Sort</td>
               <td>{JSON.stringify(data.sort)}</td>
             </tr>
             <tr>
